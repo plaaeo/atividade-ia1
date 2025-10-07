@@ -1,0 +1,265 @@
+
+C:\Users\svenm>NuSMV Edjard3.smv
+*** This is NuSMV 2.7.1 (compiled on Mon Sep 29 16:07:59 2025)
+*** Enabled addons are: compass
+*** For more information on NuSMV see <http://nusmv.fbk.eu>
+*** or email to <nusmv-users@list.fbk.eu>.
+*** Please report bugs to <Please report bugs to <nusmv-users@fbk.eu>>
+
+*** Copyright (c) 2010-2025, Fondazione Bruno Kessler
+
+*** This version of NuSMV is linked to the CUDD library version 2.4.1
+*** Copyright (c) 1995-2004, Regents of the University of Colorado
+
+*** This version of NuSMV is linked to the MiniSat SAT solver.
+*** See http://minisat.se/MiniSat.html
+*** Copyright (c) 2003-2006, Niklas Een, Niklas Sorensson
+*** Copyright (c) 2007-2010, Niklas Sorensson
+
+-- specification !(EF goalsf1)  is false
+-- as demonstrated by the following execution sequence
+Trace Description: CTL Counterexample
+Trace Type: Counterexample
+  -> State: 1.1 <-
+    level_a = 0
+    pos_a = 3
+    level_b = 0
+    pos_b = 5
+    level_c = 0
+    pos_c = 0
+    level_d = 1
+    pos_d = 3
+    move = move_b_L0_P2
+    goalsf4 = FALSE
+    goalsf3 = FALSE
+    goalsf2 = FALSE
+    goalsf1 = FALSE
+    stable_world = TRUE
+    d_is_stable = TRUE
+    c_is_stable = TRUE
+    b_is_stable = TRUE
+    a_is_stable = TRUE
+    d_is_clear = TRUE
+    c_is_clear = TRUE
+    b_is_clear = FALSE
+    a_is_clear = FALSE
+    overlap_cd = FALSE
+    overlap_bd = TRUE
+    overlap_bc = FALSE
+    overlap_ad = TRUE
+    overlap_ac = FALSE
+    overlap_ab = FALSE
+    size_d = 3
+    size_c = 2
+    size_b = 1
+    size_a = 1
+  -> State: 1.2 <-
+    move = move_d_L0_P3
+  -> State: 1.3 <-
+    level_d = 0
+    move = move_a_L1_P4
+    b_is_clear = TRUE
+    a_is_clear = TRUE
+  -> State: 1.4 <-
+    level_a = 1
+    pos_a = 4
+    move = move_b_L1_P5
+    d_is_clear = FALSE
+  -> State: 1.5 <-
+    level_b = 1
+    move = move_c_L2_P4
+  -> State: 1.6 <-
+    level_c = 2
+    pos_c = 4
+    move = move_b_L0_P2
+    goalsf1 = TRUE
+    b_is_clear = FALSE
+    a_is_clear = FALSE
+    overlap_cd = TRUE
+    overlap_bc = TRUE
+    overlap_ac = TRUE
+
+
+Objetivo SF2:
+
+-- specification !(EF goalsf2)  is false
+-- as demonstrated by the following execution sequence
+Trace Description: CTL Counterexample
+Trace Type: Counterexample
+  -> State: 1.1 <-
+    level_a = 0
+    pos_a = 3
+    level_b = 0
+    pos_b = 5
+    level_c = 0
+    pos_c = 0
+    level_d = 1
+    pos_d = 3
+    move = move_b_L0_P2
+    goalsf4 = FALSE
+    goalsf3 = FALSE
+    goalsf2 = FALSE
+    goalsf1 = FALSE
+    stable_world = TRUE
+    d_is_stable = TRUE
+    c_is_stable = TRUE
+    b_is_stable = TRUE
+    a_is_stable = TRUE
+    d_is_clear = TRUE
+    c_is_clear = TRUE
+    b_is_clear = FALSE
+    a_is_clear = FALSE
+    overlap_cd = FALSE
+    overlap_bd = TRUE
+    overlap_bc = FALSE
+    overlap_ad = TRUE
+    overlap_ac = FALSE
+    overlap_ab = FALSE
+    size_d = 3
+    size_c = 2
+    size_b = 1
+    size_a = 1
+  -> State: 1.2 <-
+    move = move_d_L0_P3
+  -> State: 1.3 <-
+    level_d = 0
+    move = move_b_L1_P5
+    b_is_clear = TRUE
+    a_is_clear = TRUE
+  -> State: 1.4 <-
+    level_b = 1
+    move = move_c_L1_P4
+    d_is_clear = FALSE
+  -> State: 1.5 <-
+    level_c = 1
+    pos_c = 4
+    move = move_a_L2_P4
+    overlap_cd = TRUE
+    overlap_bc = TRUE
+  -> State: 1.6 <-
+    level_a = 2
+    pos_a = 4
+    move = move_b_L2_P5
+    c_is_clear = FALSE
+    overlap_ac = TRUE
+  -> State: 1.7 <-
+    level_b = 2
+    move = move_b_L0_P2
+    goalsf2 = TRUE
+
+
+Objetivo SF3:
+
+-- specification !(EF goalsf3)  is false
+-- as demonstrated by the following execution sequence
+Trace Description: CTL Counterexample
+Trace Type: Counterexample
+  -> State: 1.1 <-
+    level_a = 0
+    pos_a = 3
+    level_b = 0
+    pos_b = 5
+    level_c = 0
+    pos_c = 0
+    level_d = 1
+    pos_d = 3
+    move = move_b_L0_P2
+    goalsf4 = FALSE
+    goalsf3 = FALSE
+    goalsf2 = FALSE
+    goalsf1 = FALSE
+    stable_world = TRUE
+    d_is_stable = TRUE
+    c_is_stable = TRUE
+    b_is_stable = TRUE
+    a_is_stable = TRUE
+    d_is_clear = TRUE
+    c_is_clear = TRUE
+    b_is_clear = FALSE
+    a_is_clear = FALSE
+    overlap_cd = FALSE
+    overlap_bd = TRUE
+    overlap_bc = FALSE
+    overlap_ad = TRUE
+    overlap_ac = FALSE
+    overlap_ab = FALSE
+    size_d = 3
+    size_c = 2
+    size_b = 1
+    size_a = 1
+  -> State: 1.2 <-
+    move = move_d_L1_P0
+  -> State: 1.3 <-
+    pos_d = 0
+    move = move_a_L0_P2
+    c_is_clear = FALSE
+    b_is_clear = TRUE
+    a_is_clear = TRUE
+    overlap_cd = TRUE
+    overlap_bd = FALSE
+    overlap_ad = FALSE
+  -> State: 1.4 <-
+    pos_a = 2
+    move = move_b_L0_P2
+    goalsf3 = TRUE
+    a_is_clear = FALSE
+    overlap_ad = TRUE
+
+
+
+Objetivo SF4:
+
+-- specification !(EF goalsf4)  is false
+-- as demonstrated by the following execution sequence
+Trace Description: CTL Counterexample
+Trace Type: Counterexample
+  -> State: 1.1 <-
+    level_a = 0
+    pos_a = 3
+    level_b = 0
+    pos_b = 5
+    level_c = 0
+    pos_c = 0
+    level_d = 1
+    pos_d = 3
+    move = move_b_L0_P2
+    goalsf4 = FALSE
+    goalsf3 = FALSE
+    goalsf2 = FALSE
+    goalsf1 = FALSE
+    stable_world = TRUE
+    d_is_stable = TRUE
+    c_is_stable = TRUE
+    b_is_stable = TRUE
+    a_is_stable = TRUE
+    d_is_clear = TRUE
+    c_is_clear = TRUE
+    b_is_clear = FALSE
+    a_is_clear = FALSE
+    overlap_cd = FALSE
+    overlap_bd = TRUE
+    overlap_bc = FALSE
+    overlap_ad = TRUE
+    overlap_ac = FALSE
+    overlap_ab = FALSE
+    size_d = 3
+    size_c = 2
+    size_b = 1
+    size_a = 1
+  -> State: 1.2 <-
+    move = move_d_L0_P2
+  -> State: 1.3 <-
+    level_d = 0
+    pos_d = 2
+    move = move_a_L1_P0
+    b_is_clear = TRUE
+    a_is_clear = TRUE
+    overlap_bd = FALSE
+  -> State: 1.4 <-
+    level_a = 1
+    pos_a = 0
+    move = move_b_L0_P2
+    goalsf4 = TRUE
+    c_is_clear = FALSE
+    overlap_ad = FALSE
+    overlap_ac = TRUE
