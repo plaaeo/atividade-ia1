@@ -1,0 +1,224 @@
+MODULE main
+
+VAR
+  -- Representação de Estado por Nível e Posição
+  level_a : 0..3; pos_a : 0..6; -- Bloco 'a', tamanho 1
+  level_b : 0..3; pos_b : 0..6; -- Bloco 'b', tamanho 1
+  level_c : 0..3; pos_c : 0..5; -- Bloco 'c', tamanho 2
+  level_d : 0..3; pos_d : 0..4; -- Bloco 'd', tamanho 3
+
+  -- Enumeração completa de todas as ações de movimento possíveis
+  move : { none,
+           -- Movimentos para o Bloco A (tamanho 1)
+           move_a_L0_P0, move_a_L0_P1, move_a_L0_P2, move_a_L0_P3, move_a_L0_P4, move_a_L0_P5, move_a_L0_P6,
+           move_a_L1_P0, move_a_L1_P1, move_a_L1_P2, move_a_L1_P3, move_a_L1_P4, move_a_L1_P5, move_a_L1_P6,
+           move_a_L2_P0, move_a_L2_P1, move_a_L2_P2, move_a_L2_P3, move_a_L2_P4, move_a_L2_P5, move_a_L2_P6,
+           move_a_L3_P0, move_a_L3_P1, move_a_L3_P2, move_a_L3_P3, move_a_L3_P4, move_a_L3_P5, move_a_L3_P6,
+           -- Movimentos para o Bloco B (tamanho 1)
+           move_b_L0_P0, move_b_L0_P1, move_b_L0_P2, move_b_L0_P3, move_b_L0_P4, move_b_L0_P5, move_b_L0_P6,
+           move_b_L1_P0, move_b_L1_P1, move_b_L1_P2, move_b_L1_P3, move_b_L1_P4, move_b_L1_P5, move_b_L1_P6,
+           move_b_L2_P0, move_b_L2_P1, move_b_L2_P2, move_b_L2_P3, move_b_L2_P4, move_b_L2_P5, move_b_L2_P6,
+           move_b_L3_P0, move_b_L3_P1, move_b_L3_P2, move_b_L3_P3, move_b_L3_P4, move_b_L3_P5, move_b_L3_P6,
+           -- Movimentos para o Bloco C (tamanho 2)
+           move_c_L0_P0, move_c_L0_P1, move_c_L0_P2, move_c_L0_P3, move_c_L0_P4, move_c_L0_P5,
+           move_c_L1_P0, move_c_L1_P1, move_c_L1_P2, move_c_L1_P3, move_c_L1_P4, move_c_L1_P5,
+           move_c_L2_P0, move_c_L2_P1, move_c_L2_P2, move_c_L2_P3, move_c_L2_P4, move_c_L2_P5,
+           move_c_L3_P0, move_c_L3_P1, move_c_L3_P2, move_c_L3_P3, move_c_L3_P4, move_c_L3_P5,
+           -- Movimentos para o Bloco D (tamanho 3)
+           move_d_L0_P0, move_d_L0_P1, move_d_L0_P2, move_d_L0_P3, move_d_L0_P4,
+           move_d_L1_P0, move_d_L1_P1, move_d_L1_P2, move_d_L1_P3, move_d_L1_P4,
+           move_d_L2_P0, move_d_L2_P1, move_d_L2_P2, move_d_L2_P3, move_d_L2_P4,
+           move_d_L3_P0, move_d_L3_P1, move_d_L3_P2, move_d_L3_P3, move_d_L3_P4
+         };
+
+DEFINE
+  -- Propriedades Físicas
+  size_a := 1; size_b := 1; size_c := 2; size_d := 3;
+
+  -- Definição de Sobreposição Horizontal
+  overlap_ab := (pos_a < pos_b + size_b) & (pos_b < pos_a + size_a);
+  overlap_ac := (pos_a < pos_c + size_c) & (pos_c < pos_a + size_a);
+  overlap_ad := (pos_a < pos_d + size_d) & (pos_d < pos_a + size_a);
+  overlap_bc := (pos_b < pos_c + size_c) & (pos_c < pos_b + size_b);
+  overlap_bd := (pos_b < pos_d + size_d) & (pos_d < pos_b + size_b);
+  overlap_cd := (pos_c < pos_d + size_d) & (pos_d < pos_c + size_c);
+
+  -- Definição de "Livre" (Clear)
+  a_is_clear := !( (level_b = level_a + 1 & overlap_ab) | (level_c = level_a + 1 & overlap_ac) | (level_d = level_a + 1 & overlap_ad) );
+  b_is_clear := !( (level_a = level_b + 1 & overlap_ab) | (level_c = level_b + 1 & overlap_bc) | (level_d = level_b + 1 & overlap_bd) );
+  c_is_clear := !( (level_a = level_c + 1 & overlap_ac) | (level_b = level_c + 1 & overlap_bc) | (level_d = level_c + 1 & overlap_cd) );
+  d_is_clear := !( (level_a = level_d + 1 & overlap_ad) | (level_b = level_d + 1 & overlap_bd) | (level_c = level_d + 1 & overlap_cd) );
+  -- Redefine stability without the function:
+  a_is_stable := (level_a = 0) |
+    case
+      (level_a = 0) : TRUE;
+      (level_a > 0) : (
+        (level_b = level_a - 1 & pos_a >= pos_b & pos_a < pos_b + size_b) |
+        (level_c = level_a - 1 & pos_a >= pos_c & pos_a < pos_c + size_c) |
+        (level_d = level_a - 1 & pos_a >= pos_d & pos_a < pos_d + size_d)
+      );
+      TRUE : FALSE;
+    esac;
+
+  b_is_stable := (level_b = 0) |
+    case
+      (level_b = 0) : TRUE;
+      (level_b > 0) : (
+        (level_a = level_b - 1 & pos_b >= pos_a & pos_b < pos_a + size_a) |
+        (level_c = level_b - 1 & pos_b >= pos_c & pos_b < pos_c + size_c) |
+        (level_d = level_b - 1 & pos_b >= pos_d & pos_b < pos_d + size_d)
+      );
+      TRUE : FALSE;
+    esac;
+
+  c_is_stable := (level_c = 0) | (
+    case
+      (level_c = 0) : TRUE;
+      (level_c > 0) : (
+        (level_a = level_c - 1 & pos_c >= pos_a & pos_c < pos_a + size_a) |
+        (level_b = level_c - 1 & pos_c >= pos_b & pos_c < pos_b + pos_b) |
+        (level_d = level_c - 1 & pos_c >= pos_d & pos_c < pos_d + size_d)
+      );
+      TRUE : FALSE;
+    esac
+    &
+    case
+      (level_c = 0) : TRUE;
+      (level_c > 0) : (
+        (level_a = level_c - 1 & (pos_c + size_c - 1) >= pos_a & (pos_c + size_c - 1) < pos_a + size_a) |
+        (level_b = level_c - 1 & (pos_c + size_c - 1) >= pos_b & (pos_c + size_c - 1) < pos_b + size_b) |
+        (level_d = level_c - 1 & (pos_c + size_c - 1) >= pos_d & (pos_c + size_c - 1) < pos_d + size_d)
+      );
+      TRUE : FALSE;
+    esac
+  );
+
+    d_is_stable := (level_c = 0) | (
+    case
+      (level_d = 0) : TRUE;
+      (level_d > 0) : (
+        (level_a = level_d - 1 & pos_c >= pos_a & pos_d < pos_a + size_a) |
+        (level_b = level_d - 1 & pos_c >= pos_b & pos_d < pos_b + pos_b) |
+        (level_c = level_d - 1 & pos_d >= pos_c & pos_d < pos_c + size_c)
+      );
+      TRUE : FALSE;
+    esac
+    &
+    case
+      (level_d = 0) : TRUE;
+      (level_d > 0) : (
+        (level_a = level_d - 1 & (pos_d + size_d - 1) >= pos_a & (pos_d + size_d - 1) < pos_a + size_a) |
+        (level_b = level_d - 1 & (pos_d + size_d - 1) >= pos_b & (pos_d + size_d - 1) < pos_b + size_b) |
+        (level_c = level_d - 1 & (pos_d + size_d - 1) >= pos_c & (pos_d + size_d - 1) < pos_c + size_c)
+      );
+      TRUE : FALSE;
+    esac
+  );
+
+  stable_world := a_is_stable & b_is_stable & c_is_stable & d_is_stable;
+
+  -- Objetivo: Estado final da "Situação 1"
+  goalsf1 := (level_d = 0 & pos_d = 3) & (level_c = 2 & pos_c = 4) & (level_b = 1 & pos_b = 5) & (level_a = 1 & pos_a = 4);
+  goalsf2 := (level_d = 0 & pos_d = 3) & (level_c = 1 & pos_c = 4) & (level_b = 2 & pos_b = 5) & (level_a = 2 & pos_a = 4);
+  goalsf3 := (level_d = 1 & pos_d = 0) & (level_c = 0 & pos_c = 0) & (level_b = 0 & pos_b = 5) & (level_a = 0 & pos_a = 2);
+  goalsf4 := (level_d = 0 & pos_d = 2) & (level_c = 0 & pos_c = 0) & (level_b = 0 & pos_b = 5) & (level_a = 1 & pos_a = 0);
+
+  goal2s1 := (level_d = 0 & pos_d = 3) & (level_c = 0 & pos_c = 0) & (level_b = 0 & pos_b = 2) & (level_a = 1 & pos_a = 0);
+  goal2s2 := (level_d = 0 & pos_d = 3) & (level_c = 0 & pos_c = 0) & (level_b = 0 & pos_b = 2) & (level_a = 1 & pos_a = 2);
+  goal2s3 := (level_d = 0 & pos_d = 3) & (level_c = 1 & pos_c = 4) & (level_b = 0 & pos_b = 2) & (level_a = 1 & pos_a = 2);
+  goal2s4 := (level_d = 0 & pos_d = 3) & (level_c = 1 & pos_c = 4) & (level_b = 0 & pos_b = 2) & (level_a = 2 & pos_a = 4);
+  goal2s5 := (level_d = 0 & pos_d = 3) & (level_c = 1 & pos_c = 4) & (level_b = 2 & pos_b = 5) & (level_a = 2 & pos_a = 4);
+
+
+INIT
+  (level_a = 0 & pos_a = 3) & (level_b = 0 & pos_b = 5) & (level_d = 1 & pos_d = 3) & (level_c = 0 & pos_c = 0); -- Situacao 1
+--(level_d = 0 & pos_d = 3) & (level_c = 0 & pos_c = 0) & (level_b = 1 & pos_b = 1) & (level_a = 1 & pos_a = 0); -- Situacao 2
+--(level_a = 0 & pos_a = 3) & (level_b = 0 & pos_b = 5) & (level_d = 1 & pos_d = 3) & (level_c = 0 & pos_c = 0); -- Situacao 3
+
+TRANS
+  next(level_a) =
+    case
+      (move = move_a_L0_P0 | move = move_a_L0_P1 | move = move_a_L0_P2 | move = move_a_L0_P3 | move = move_a_L0_P4 | move = move_a_L0_P5 | move = move_a_L0_P6) & a_is_clear & next(stable_world): 0;
+      (move = move_a_L1_P0 | move = move_a_L1_P1 | move = move_a_L1_P2 | move = move_a_L1_P3 | move = move_a_L1_P4 | move = move_a_L1_P5 | move = move_a_L1_P6) & a_is_clear & next(stable_world): 1;
+      (move = move_a_L2_P0 | move = move_a_L2_P1 | move = move_a_L2_P2 | move = move_a_L2_P3 | move = move_a_L2_P4 | move = move_a_L2_P5 | move = move_a_L2_P6) & a_is_clear & next(stable_world): 2;
+      (move = move_a_L3_P0 | move = move_a_L3_P1 | move = move_a_L3_P2 | move = move_a_L3_P3 | move = move_a_L3_P4 | move = move_a_L3_P5 | move = move_a_L3_P6) & a_is_clear & next(stable_world): 3;
+      TRUE: level_a;
+    esac
+&
+  next(pos_a) =
+    case
+      (move = move_a_L0_P0 | move = move_a_L1_P0 | move = move_a_L2_P0 | move = move_a_L3_P0) & a_is_clear & next(stable_world): 0;
+      (move = move_a_L0_P1 | move = move_a_L1_P1 | move = move_a_L2_P1 | move = move_a_L3_P1) & a_is_clear & next(stable_world): 1;
+      (move = move_a_L0_P2 | move = move_a_L1_P2 | move = move_a_L2_P2 | move = move_a_L3_P2) & a_is_clear & next(stable_world): 2;
+      (move = move_a_L0_P3 | move = move_a_L1_P3 | move = move_a_L2_P3 | move = move_a_L3_P3) & a_is_clear & next(stable_world): 3;
+      (move = move_a_L0_P4 | move = move_a_L1_P4 | move = move_a_L2_P4 | move = move_a_L3_P4) & a_is_clear & next(stable_world): 4;
+      (move = move_a_L0_P5 | move = move_a_L1_P5 | move = move_a_L2_P5 | move = move_a_L3_P5) & a_is_clear & next(stable_world): 5;
+      (move = move_a_L0_P6 | move = move_a_L1_P6 | move = move_a_L2_P6 | move = move_a_L3_P6) & a_is_clear & next(stable_world): 6;
+      TRUE: pos_a;
+    esac
+&
+  next(level_b) =
+    case
+      (move = move_b_L0_P0 | move = move_b_L0_P1 | move = move_b_L0_P2 | move = move_b_L0_P3 | move = move_b_L0_P4 | move = move_b_L0_P5 | move = move_b_L0_P6) & b_is_clear & next(stable_world): 0;
+      (move = move_b_L1_P0 | move = move_b_L1_P1 | move = move_b_L1_P2 | move = move_b_L1_P3 | move = move_b_L1_P4 | move = move_b_L1_P5 | move = move_b_L1_P6) & b_is_clear & next(stable_world): 1;
+      (move = move_b_L2_P0 | move = move_b_L2_P1 | move = move_b_L2_P2 | move = move_b_L2_P3 | move = move_b_L2_P4 | move = move_b_L2_P5 | move = move_b_L2_P6) & b_is_clear & next(stable_world): 2;
+      (move = move_b_L3_P0 | move = move_b_L3_P1 | move = move_b_L3_P2 | move = move_b_L3_P3 | move = move_b_L3_P4 | move = move_b_L3_P5 | move = move_b_L3_P6) & b_is_clear & next(stable_world): 3;
+      TRUE: level_b;
+    esac
+&
+  next(pos_b) =
+    case
+      (move = move_b_L0_P0 | move = move_b_L1_P0 | move = move_b_L2_P0 | move = move_b_L3_P0) & b_is_clear & next(stable_world): 0;
+      (move = move_b_L0_P1 | move = move_b_L1_P1 | move = move_b_L2_P1 | move = move_b_L3_P1) & b_is_clear & next(stable_world): 1;
+      (move = move_b_L0_P2 | move = move_b_L1_P2 | move = move_b_L2_P2 | move = move_b_L3_P2) & b_is_clear & next(stable_world): 2;
+      (move = move_b_L0_P3 | move = move_b_L1_P3 | move = move_b_L2_P3 | move = move_b_L3_P3) & b_is_clear & next(stable_world): 3;
+      (move = move_b_L0_P4 | move = move_b_L1_P4 | move = move_b_L2_P4 | move = move_b_L3_P4) & b_is_clear & next(stable_world): 4;
+      (move = move_b_L0_P5 | move = move_b_L1_P5 | move = move_b_L2_P5 | move = move_b_L3_P5) & b_is_clear & next(stable_world): 5;
+      (move = move_b_L0_P6 | move = move_b_L1_P6 | move = move_b_L2_P6 | move = move_b_L3_P6) & b_is_clear & next(stable_world): 6;
+      TRUE: pos_b;
+    esac
+&
+  next(level_c) =
+    case
+      (move = move_c_L0_P0 | move = move_c_L0_P1 | move = move_c_L0_P2 | move = move_c_L0_P3 | move = move_c_L0_P4 | move = move_c_L0_P5) & c_is_clear & next(stable_world): 0;
+      (move = move_c_L1_P0 | move = move_c_L1_P1 | move = move_c_L1_P2 | move = move_c_L1_P3 | move = move_c_L1_P4 | move = move_c_L1_P5) & c_is_clear & next(stable_world): 1;
+      (move = move_c_L2_P0 | move = move_c_L2_P1 | move = move_c_L2_P2 | move = move_c_L2_P3 | move = move_c_L2_P4 | move = move_c_L2_P5) & c_is_clear & next(stable_world): 2;
+      (move = move_c_L3_P0 | move = move_c_L3_P1 | move = move_c_L3_P2 | move = move_c_L3_P3 | move = move_c_L3_P4 | move = move_c_L3_P5) & c_is_clear & next(stable_world): 3;
+      TRUE: level_c;
+    esac
+&
+  next(pos_c) =
+    case
+      (move = move_c_L0_P0 | move = move_c_L1_P0 | move = move_c_L2_P0 | move = move_c_L3_P0) & c_is_clear & next(stable_world): 0;
+      (move = move_c_L0_P1 | move = move_c_L1_P1 | move = move_c_L2_P1 | move = move_c_L3_P1) & c_is_clear & next(stable_world): 1;
+      (move = move_c_L0_P2 | move = move_c_L1_P2 | move = move_c_L2_P2 | move = move_c_L3_P2) & c_is_clear & next(stable_world): 2;
+      (move = move_c_L0_P3 | move = move_c_L1_P3 | move = move_c_L2_P3 | move = move_c_L3_P3) & c_is_clear & next(stable_world): 3;
+      (move = move_c_L0_P4 | move = move_c_L1_P4 | move = move_c_L2_P4 | move = move_c_L3_P4) & c_is_clear & next(stable_world): 4;
+      (move = move_c_L0_P5 | move = move_c_L1_P5 | move = move_c_L2_P5 | move = move_c_L3_P5) & c_is_clear & next(stable_world): 5;
+      TRUE: pos_c;
+    esac
+&
+  next(level_d) =
+    case
+      (move = move_d_L0_P0 | move = move_d_L0_P1 | move = move_d_L0_P2 | move = move_d_L0_P3 | move = move_d_L0_P4) & d_is_clear & next(stable_world): 0;
+      (move = move_d_L1_P0 | move = move_d_L1_P1 | move = move_d_L1_P2 | move = move_d_L1_P3 | move = move_d_L1_P4) & d_is_clear & next(stable_world): 1;
+      (move = move_d_L2_P0 | move = move_d_L2_P1 | move = move_d_L2_P2 | move = move_d_L2_P3 | move = move_d_L2_P4) & d_is_clear & next(stable_world): 2;
+      (move = move_d_L3_P0 | move = move_d_L3_P1 | move = move_d_L3_P2 | move = move_d_L3_P3 | move = move_d_L3_P4) & d_is_clear & next(stable_world): 3;
+      TRUE: level_d;
+    esac
+&
+  next(pos_d) =
+    case
+      (move = move_d_L0_P0 | move = move_d_L1_P0 | move = move_d_L2_P0 | move = move_d_L3_P0) & d_is_clear & next(stable_world): 0;
+      (move = move_d_L0_P1 | move = move_d_L1_P1 | move = move_d_L2_P1 | move = move_d_L3_P1) & d_is_clear & next(stable_world): 1;
+      (move = move_d_L0_P2 | move = move_d_L1_P2 | move = move_d_L2_P2 | move = move_d_L3_P2) & d_is_clear & next(stable_world): 2;
+      (move = move_d_L0_P3 | move = move_d_L1_P3 | move = move_d_L2_P3 | move = move_d_L3_P3) & d_is_clear & next(stable_world): 3;
+      (move = move_d_L0_P4 | move = move_d_L1_P4 | move = move_d_L2_P4 | move = move_d_L3_P4) & d_is_clear & next(stable_world): 4;
+      TRUE: pos_d;
+    esac; --(goal2s1 -> !EF (goal2s2 -> !EF (goal2s3 -> !EF (goal2s4 -> goal2s5))));
+
+CTLSPEC !EF goal2s4 -> goal2s5
+CTLSPEC !EF goalsf1
+CTLSPEC !EF goalsf2
+CTLSPEC !EF goalsf3
+CTLSPEC !EF goalsf4
